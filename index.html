@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Hostel Complaints System</title>
+  <link rel="stylesheet" href="src/main/webapp/css/style.css">
+  <style>
+    /* Specific enhancements for GitHub Pages interactive app */
+    .tab-btn.active {
+      background: #4f46e5;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    }
+    .hero-banner {
+      background: linear-gradient(135deg, #ffffff 0%, #eef2ff 50%, #f0fdf4 100%);
+      border: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span class="brand-icon">🏠</span> Smart Hostel Complaints
+    </div>
+    <ul class="nav-links">
+      <li><button onclick="switchTab('home')" id="tab-home" class="nav-link tab-btn active">Home</button></li>
+      <li><button onclick="switchTab('student')" id="tab-student" class="nav-link tab-btn">Student Dashboard</button></li>
+      <li><button onclick="switchTab('new')" id="tab-new" class="btn btn-primary btn-sm">+ New Complaint</button></li>
+      <li><button onclick="switchTab('admin')" id="tab-admin" class="nav-link tab-btn">Admin Dashboard</button></li>
+      <li><button onclick="switchTab('all-complaints')" id="tab-all-complaints" class="nav-link tab-btn">All Complaints</button></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+
+    <!-- PAGE 1: HOME LANDING -->
+    <section id="page-home" class="space-y-6">
+      <div class="glass-panel hero-banner" style="text-align: center; padding: 50px 30px;">
+        <h1 style="font-size: 2.5rem; color: #1e293b; margin-bottom: 12px; font-weight: 800;">
+          Smart Hostel Complaint Management System
+        </h1>
+        <p style="color: #64748b; font-size: 1.05rem; max-width: 680px; margin: 0 auto 28px auto; line-height: 1.6;">
+          An automated digital platform enabling hostel students to register complaints, attach photos, track real-time resolution status, and allow administrators to assign maintenance staff and resolve issues efficiently.
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+          <button onclick="switchTab('student')" class="btn btn-primary">Student Dashboard</button>
+          <button onclick="switchTab('new')" class="btn btn-secondary">+ Submit Complaint</button>
+          <button onclick="switchTab('admin')" class="btn btn-secondary">Admin Control Panel</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div style="font-size: 2rem;">🔧</div>
+          <div class="stat-number">Plumbing & Electric</div>
+          <div class="stat-label">Fast Maintenance</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size: 2rem;">📶</div>
+          <div class="stat-number">Wi-Fi & Network</div>
+          <div class="stat-label">Quick Resolution</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size: 2rem;">📸</div>
+          <div class="stat-number">Photo Attachment</div>
+          <div class="stat-label">Visual Verification</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size: 2rem;">📊</div>
+          <div class="stat-number">Live Status</div>
+          <div class="stat-label">Real-time Updates</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: STUDENT DASHBOARD -->
+    <section id="page-student" style="display: none;">
+      <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 1.8rem;">Welcome, John Doe 👋</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">
+            Student ID: <strong style="color: var(--primary);">STU1001</strong> | Room: <strong style="color: var(--primary);">B-204</strong> | Dept: <strong style="color: var(--primary);">Computer Science</strong>
+          </p>
+        </div>
+        <button onclick="switchTab('new')" class="btn btn-primary">+ Submit Complaint</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Submitted</div>
+          <div class="stat-number" id="stu-total-val">4</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-pending);">Pending</div>
+          <div class="stat-number" style="color: var(--color-pending);" id="stu-pending-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-progress);">In Progress</div>
+          <div class="stat-number" style="color: var(--color-progress);" id="stu-progress-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-resolved);">Resolved</div>
+          <div class="stat-number" style="color: var(--color-resolved);" id="stu-resolved-val">2</div>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <h2 style="font-size: 1.3rem; margin-bottom: 16px;">My Complaint History</h2>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Complaint ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: NEW COMPLAINT -->
+    <section id="page-new" style="display: none;">
+      <div class="glass-panel" style="max-width: 680px; margin: 0 auto;">
+        <h2 style="font-size: 1.6rem; margin-bottom: 6px;">Submit New Hostel Complaint</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">Fill in the complaint details. Maintenance staff will inspect and fix the issue.</p>
+
+        <form onsubmit="saveNewComplaint(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="inp-category" class="form-control" required>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Wi-Fi">Wi-Fi & Network</option>
+                <option value="Cleaning">Cleaning & Hygiene</option>
+                <option value="Furniture">Furniture & Carpentry</option>
+                <option value="Other">Other Issue</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Priority Level *</label>
+              <select id="inp-priority" class="form-control" required>
+                <option value="LOW">Low Priority</option>
+                <option value="MEDIUM" selected>Medium Priority</option>
+                <option value="HIGH">High Priority / Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label">Complaint Title *</label>
+              <input type="text" id="inp-title" class="form-control" placeholder="e.g. Water leakage in sink" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Room Number *</label>
+              <input type="text" id="inp-room" class="form-control" value="B-204" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Detailed Description *</label>
+            <textarea id="inp-desc" class="form-control" placeholder="Provide full description of the complaint..." required></textarea>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Complaint</button>
+            <button type="button" onclick="switchTab('student')" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- PAGE 4: ADMIN DASHBOARD -->
+    <section id="page-admin" style="display: none;">
+      <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <h1 style="font-size: 1.8rem;">Administrator Dashboard 🛡️</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Live calculated metrics and hostel maintenance overview</p>
+        </div>
+        <button onclick="switchTab('all-complaints')" class="btn btn-primary">Manage All Complaints</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="adm-total-val">4</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-pending);">Pending</div>
+          <div class="stat-number" style="color: var(--color-pending);" id="adm-pending-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-assigned);">Assigned</div>
+          <div class="stat-number" style="color: var(--color-assigned);" id="adm-assigned-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-progress);">In Progress</div>
+          <div class="stat-number" style="color: var(--color-progress);" id="adm-progress-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-resolved);">Resolved</div>
+          <div class="stat-number" style="color: var(--color-resolved);" id="adm-resolved-val">1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label" style="color: var(--color-rejected);">Overdue</div>
+          <div class="stat-number" style="color: var(--color-rejected);">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: ALL COMPLAINTS (ADMIN) -->
+    <section id="page-all-complaints" style="display: none;">
+      <div class="glass-panel">
+        <h2 style="font-size: 1.5rem; margin-bottom: 16px;">All Complaints Management</h2>
+        
+        <div class="filter-bar">
+          <input type="text" id="search-input" class="form-control" placeholder="Search Title, Room, Student..." onkeyup="renderTables()">
+          <select id="filter-status" class="form-control" onchange="renderTables()">
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="ASSIGNED">Assigned</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+          <select id="filter-category" class="form-control" onchange="renderTables()">
+            <option value="ALL">All Categories</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Wi-Fi">Wi-Fi</option>
+            <option value="Cleaning">Cleaning</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Room</th>
+                <th>Title & Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned Staff</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let complaintsData = [
+      { id: 'CMP-1001', student: 'John Doe', room: 'B-204', title: 'Water leakage in bathroom sink', category: 'Plumbing', priority: 'HIGH', status: 'IN_PROGRESS', staff: 'Plumber Ramesh', date: '2026-09-26 10:30' },
+      { id: 'CMP-1002', student: 'John Doe', room: 'B-204', title: 'Wi-Fi router disconnected in block B', category: 'Wi-Fi', priority: 'MEDIUM', status: 'PENDING', staff: '', date: '2026-09-26 14:15' },
+      { id: 'CMP-1003', student: 'John Doe', room: 'B-204', title: 'Ceiling fan regulator replacement', category: 'Electrical', priority: 'LOW', status: 'RESOLVED', staff: 'Electrician Suresh', date: '2026-09-25 09:00' },
+      { id: 'CMP-1004', student: 'Alice Smith', room: 'A-102', title: 'Broken wooden chair leg', category: 'Furniture', priority: 'MEDIUM', status: 'ASSIGNED', staff: 'Carpenter Kumar', date: '2026-09-26 16:00' }
+    ];
+
+    function switchTab(tabName) {
+      ['home', 'student', 'new', 'admin', 'all-complaints'].forEach(t => {
+        document.getElementById('page-' + t).style.display = 'none';
+        const btn = document.getElementById('tab-' + t);
+        if (btn) btn.classList.remove('active');
+      });
+
+      document.getElementById('page-' + tabName).style.display = 'block';
+      const activeBtn = document.getElementById('tab-' + tabName);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      renderTables();
+    }
+
+    function renderTables() {
+      const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const statusFilter = document.getElementById('filter-status')?.value || 'ALL';
+      const catFilter = document.getElementById('filter-category')?.value || 'ALL';
+
+      // Render Student Table
+      const stuBody = document.getElementById('student-table-body');
+      stuBody.innerHTML = '';
+      let stuTot = 0, stuPen = 0, stuProg = 0, stuRes = 0;
+
+      complaintsData.filter(c => c.student === 'John Doe').forEach(c => {
+        stuTot++;
+        if (c.status === 'PENDING') stuPen++;
+        else if (c.status === 'ASSIGNED' || c.status === 'IN_PROGRESS') stuProg++;
+        else if (c.status === 'RESOLVED') stuRes++;
+
+        stuBody.innerHTML += `
+          <tr>
+            <td><strong>${c.id}</strong></td>
+            <td>${c.title}</td>
+            <td>${c.category}</td>
+            <td><span class="badge badge-priority badge-${c.priority.toLowerCase()}">${c.priority}</span></td>
+            <td><span class="badge badge-${c.status.toLowerCase()}">${c.status}</span></td>
+            <td>${c.date}</td>
+            <td>
+              ${c.status === 'PENDING' ? `<button onclick="cancelComplaint('${c.id}')" class="btn btn-danger btn-sm">Cancel</button>` : `<span style="color:#94a3b8; font-size:0.8rem;">Processing</span>`}
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('stu-total-val').innerText = stuTot;
+      document.getElementById('stu-pending-val').innerText = stuPen;
+      document.getElementById('stu-progress-val').innerText = stuProg;
+      document.getElementById('stu-resolved-val').innerText = stuRes;
+
+      // Render Admin Table
+      const admBody = document.getElementById('admin-table-body');
+      admBody.innerHTML = '';
+      let aTot = complaintsData.length, aPen = 0, aAss = 0, aProg = 0, aRes = 0;
+
+      complaintsData.forEach((c, idx) => {
+        if (c.status === 'PENDING') aPen++;
+        else if (c.status === 'ASSIGNED') aAss++;
+        else if (c.status === 'IN_PROGRESS') aProg++;
+        else if (c.status === 'RESOLVED') aRes++;
+
+        if (search && !c.title.toLowerCase().includes(search) && !c.student.toLowerCase().includes(search) && !c.room.toLowerCase().includes(search)) return;
+        if (statusFilter !== 'ALL' && c.status !== statusFilter) return;
+        if (catFilter !== 'ALL' && c.category !== catFilter) return;
+
+        admBody.innerHTML += `
+          <tr>
+            <td><strong>${c.id}</strong></td>
+            <td>${c.student}</td>
+            <td><strong>${c.room}</strong></td>
+            <td>${c.title}<br><span style="font-size:0.75rem; color:#64748b;">${c.category}</span></td>
+            <td><span class="badge badge-priority badge-${c.priority.toLowerCase()}">${c.priority}</span></td>
+            <td><span class="badge badge-${c.status.toLowerCase()}">${c.status}</span></td>
+            <td>${c.staff || '<span style="color:#94a3b8;">Unassigned</span>'}</td>
+            <td>
+              <select onchange="updateComplaintStatus(${idx}, this.value)" class="form-control" style="padding:4px 8px; font-size:0.8rem;">
+                <option value="PENDING" ${c.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                <option value="ASSIGNED" ${c.status === 'ASSIGNED' ? 'selected' : ''}>ASSIGNED</option>
+                <option value="IN_PROGRESS" ${c.status === 'IN_PROGRESS' ? 'selected' : ''}>IN_PROGRESS</option>
+                <option value="RESOLVED" ${c.status === 'RESOLVED' ? 'selected' : ''}>RESOLVED</option>
+                <option value="REJECTED" ${c.status === 'REJECTED' ? 'selected' : ''}>REJECTED</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('adm-total-val').innerText = aTot;
+      document.getElementById('adm-pending-val').innerText = aPen;
+      document.getElementById('adm-assigned-val').innerText = aAss;
+      document.getElementById('adm-progress-val').innerText = aProg;
+      document.getElementById('adm-resolved-val').innerText = aRes;
+    }
+
+    function updateComplaintStatus(idx, newStatus) {
+      complaintsData[idx].status = newStatus;
+      if (newStatus === 'ASSIGNED' && !complaintsData[idx].staff) {
+        complaintsData[idx].staff = 'Staff Assigned';
+      }
+      renderTables();
+    }
+
+    function cancelComplaint(id) {
+      if (confirm('Cancel complaint ' + id + '?')) {
+        const item = complaintsData.find(c => c.id === id);
+        if (item) item.status = 'REJECTED';
+        renderTables();
+      }
+    }
+
+    function saveNewComplaint(e) {
+      e.preventDefault();
+      const title = document.getElementById('inp-title').value;
+      const category = document.getElementById('inp-category').value;
+      const priority = document.getElementById('inp-priority').value;
+      const room = document.getElementById('inp-room').value;
+
+      const newId = 'CMP-' + Math.floor(1000 + Math.random() * 9000);
+      complaintsData.unshift({
+        id: newId,
+        student: 'John Doe',
+        room: room,
+        title: title,
+        category: category,
+        priority: priority,
+        status: 'PENDING',
+        staff: '',
+        date: new Date().toISOString().slice(0, 16).replace('T', ' ')
+      });
+
+      document.getElementById('inp-title').value = '';
+      document.getElementById('inp-desc').value = '';
+      alert('Complaint registered successfully! ID: ' + newId);
+      switchTab('student');
+    }
+
+    renderTables();
+  </script>
+</body>
+</html>
